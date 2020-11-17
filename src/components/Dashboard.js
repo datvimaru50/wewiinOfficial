@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, Image, Button, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, Button, TextInput, TouchableOpacity, Modal, FlatList, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 // import ButtonNav from './ButtonNav';
@@ -22,12 +22,50 @@ export default function Dashboard() {
 
     let [active, setActive] = useState("all");
 
+    let [modalVisible, setModalVisible] = useState(false);
+
     function getColor(name) {
         return active === name ? activeColor : defaultColor;
     }
 
+    function closeModal(){
+        setModalVisible(false);
+    }
+
   return (
         <View style={{flex: 1}}>
+            <Modal
+
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                }}
+
+            >
+               <Profile onCloseModal={closeModal} />
+            </Modal>
+            <View style={styles.titleBarContainer}>
+                <User 
+                    width={24} 
+                    height={24} 
+                    fill="#fff"
+                    onPress={()=>{setModalVisible(true)}}
+                />
+
+                {
+                    active === "all" &&
+                    <Text style={styles.titleText}>Tất cả khóa học</Text>
+                }
+                {
+                    active === "profile" &&
+                    <Text style={styles.titleText}>Thông tin cá nhân</Text>
+                }
+
+                <Bell width={24} height={24} fill="#fff" />
+            </View>
+
             <ScrollView>
                 {
                     active === "all" &&
@@ -77,6 +115,19 @@ export default function Dashboard() {
 }
 
 const styles = StyleSheet.create({
+    titleBarContainer: {
+        padding: GUTTER, 
+        flexDirection: "row",
+        justifyContent: "space-between",
+
+        backgroundColor: "#1caba0"
+    },
+    titleText: {
+        fontSize: 18,
+        color: "#fff",
+        textTransform: "uppercase",
+        fontWeight: "bold",
+    },
     buttonBarContainer: {
         padding: GUTTER, 
         flexDirection: "row", 
